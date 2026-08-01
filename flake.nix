@@ -49,7 +49,13 @@
 
           wrapperArgs =
             let
-              extraPkgs = [ pkgs.python3 ];
+              extraPkgs = [
+                (pkgs.python3.withPackages (ps: [
+                  (ps.trino-python-client.overridePythonAttrs (oldAttrs: {
+                    pname = "trino";
+                  }))
+                ]))
+              ];
             in
             [
               "--prefix"
