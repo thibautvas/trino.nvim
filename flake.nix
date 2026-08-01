@@ -47,11 +47,22 @@
             }
           ];
 
+          wrapperArgs =
+            let
+              extraPkgs = [ pkgs.python3 ];
+            in
+            [
+              "--prefix"
+              "PATH"
+              ":"
+              (pkgs.lib.makeBinPath extraPkgs)
+            ];
+
         in
         {
           default = trino-nvim;
           nvim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
-            inherit luaRcContent plugins;
+            inherit luaRcContent plugins wrapperArgs;
           };
         }
       );

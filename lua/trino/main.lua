@@ -1,8 +1,16 @@
 local M = {}
 
 function M.run(sql)
+  local plugin_root = vim.fn.fnamemodify(
+    debug.getinfo(1, "S").source:sub(2),
+    ":h:h:h"
+  )
+
   local result = vim.system(
-    { os.getenv("HOME") .. "/.local/opt/custom_lib/.venv/bin/python", "-m", "custom_lib.query" },
+    {
+      "python3",
+      plugin_root .. "/python/trino_query.py",
+    },
     {
       stdin = sql,
       text = true,
