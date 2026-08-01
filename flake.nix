@@ -87,11 +87,27 @@
         }
       );
 
-      apps = forAllSystems (system: {
-        default = {
-          type = "app";
-          program = "${self.packages.${system}.nvim}/bin/nvim";
-        };
-      });
+      apps = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          dockerTrino = pkgs.writeShellApplication {
+            name = "run-trino";
+            runtimeInputs = [ pkgs.docker ];
+            text = "docker run -d --name trino -p 8080:8080 trinodb/trino";
+          };
+
+        in
+        {
+          default = {
+            type = "app";
+            program = "${self.packages.${system}.nvim}/bin/nvim";
+          };
+          dockerTrino = {
+            type = "app";
+            program = "${dockerTrino}/bin/${dockerTrino.name}";
+          };
+        }
+      );
     };
 }
