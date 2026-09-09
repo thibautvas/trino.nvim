@@ -36,6 +36,22 @@ And optionally:
 vim.keymap.set("x", "<leader>ef", require("trino").run_visual)
 ```
 
+The equivalent normal mode keymap requires a bit of work,
+for example with nvim-treesitter-textobjects
+and `(statement) @query.outer` textobject:
+```lua
+vim.keymap.set("n", "<leader>ef", function()
+  local ok = pcall(
+    require("nvim-treesitter-textobjects.select").select_textobject,
+    "@query.outer",
+    "textobjects"
+  )
+  if ok then
+    require("trino").run_visual()
+  end
+end)
+```
+
 Try it out by selecting the following and running `:'<,'>RunSQL`,
 or an equivalent keymap:
 ```sql
