@@ -33,7 +33,7 @@ require("trino").setup({
 ```
 And optionally:
 ```lua
-vim.keymap.set("v", "<leader>ef", require("trino").run_visual)
+vim.keymap.set("x", "<leader>ef", require("trino").run_visual)
 ```
 
 Try it out by selecting the following and running `:'<,'>RunSQL`,

@@ -27,6 +27,10 @@ end
 function M.run_visual()
   local sql = input.get_selection_text()
 
+  if vim.fn.mode():match("[vV\22]") then
+    vim.cmd("normal! \27")
+  end
+
   if sql == "" then
     vim.notify("No selection", vim.log.levels.WARN)
     return

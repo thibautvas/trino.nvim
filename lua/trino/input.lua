@@ -1,19 +1,20 @@
 local M = {}
 
 function M.get_selection()
-  local start_pos = vim.fn.getpos("'<")
-  local end_pos = vim.fn.getpos("'>")
+  local mode = vim.fn.mode()
 
-  local lines = vim.fn.getline(start_pos[2], end_pos[2])
+  local pos1, pos2, regtype
+  if mode:match("[vV\22]") then
+    pos1, pos2, regtype = vim.fn.getpos("v"), vim.fn.getpos("."), mode
+  else
+    pos1, pos2, regtype = vim.fn.getpos("'<"), vim.fn.getpos("'>"), vim.fn.visualmode()
+  end
 
-  if #lines == 0 then
+  if pos1[2] == 0 or pos2[2] == 0 or regtype == "" then
     return {}
   end
 
-  lines[1] = string.sub(lines[1], start_pos[3])
-  lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
-
-  return lines
+  return vim.fn.getregion(pos1, pos2, { type = regtype })
 end
 
 function M.get_selection_text()
