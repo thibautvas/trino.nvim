@@ -2,7 +2,7 @@
 
 ## Playground
 ```bash
-nix run github:thibautvas/trino.nvim
+nix run github:thibautvas/trino.nvim#nvim
 ```
 
 ## Example
