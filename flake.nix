@@ -17,6 +17,13 @@
           trino-nvim = pkgs.vimUtils.buildVimPlugin {
             name = "trino.nvim";
             src = ./.;
+            runtimeDeps = [
+              (pkgs.python3.withPackages (ps: [
+                (ps.trino-python-client.overridePythonAttrs (oldAttrs: {
+                  pname = "trino";
+                }))
+              ]))
+            ];
           };
 
           wrappedNvim = pkgs.callPackage ./nix/nvim.nix {
