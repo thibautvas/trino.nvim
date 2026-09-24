@@ -13,7 +13,7 @@ function M.run(sql, config)
 
   local result = vim.system(
     {
-      "python3",
+      plugin_root .. "/python/.venv/bin/python" or "python3",
       plugin_root .. "/python/trino_query.py",
     },
     {

@@ -1,1 +1,2 @@
-vim.api.nvim_create_user_command("RunSQL", require("trino").run_visual, { range = true })
+if vim.g.loaded_gitutils then return end
+vim.g.loaded_gitutils = true
