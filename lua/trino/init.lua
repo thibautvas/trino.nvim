@@ -1,30 +1,7 @@
-local input = require("trino.input")
 local main = require("trino.main")
-local output = require("trino.output")
+local venv = require("trino.venv")
 
 local M = {}
-
-function M.run_visual()
-  local sql = input.get_selection_text()
-
-  if vim.fn.mode():match("[vV\22]") then
-    vim.cmd("normal! \27")
-  end
-
-  if sql == "" then
-    vim.notify("No selection", vim.log.levels.WARN)
-    return
-  end
-
-  local ok, result = pcall(main.run, sql, M.options)
-
-  if not ok then
-    vim.notify(result, vim.log.levels.ERROR)
-    return
-  end
-
-  output.show(result)
-end
 
 M.defaults = {
   host = nil,
@@ -40,24 +17,31 @@ M.defaults = {
   verify = false,
 }
 
-M.options = vim.deepcopy(M.defaults)
+function M.run()
+  main.run_visual(M.options or M.defaults)
+end
+
+M.venv = venv.build
 
 function M.setup(opts)
   M.options = vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
 
-  local subcmds = {}
-  subcmds.run = M.run_visual
-  subcmds.venv = require("trino.venv").build
+  local subcmds = {
+    run = M.run,
+    venv = M.venv,
+  }
 
-  vim.api.nvim_create_user_command("Trino", function(cmd)
-    local sub = cmd.args
-    if not subcmds[sub] then
-      vim.notify("Trino unknown subcommand: " .. sub, vim.log.levels.ERROR)
+  vim.api.nvim_create_user_command("Trino", function(args)
+    local sub = args.fargs[1]
+    local fn = subcmds[sub]
+    if not fn then
+      vim.notify("Trino unknown subcommand: " .. tostring(sub), vim.log.levels.ERROR)
       return
     end
-    subcmds[sub]()
+    fn(args)
   end, {
     nargs = 1,
+    range = true,
     force = true,
     complete = function()
       return vim.tbl_keys(subcmds)
