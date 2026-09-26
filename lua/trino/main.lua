@@ -1,6 +1,9 @@
+local input = require("trino.input")
+local output = require("trino.output")
+
 local M = {}
 
-function M.run(sql, config)
+function M.run_payload(sql, config)
   local payload = vim.json.encode({
     config = config,
     sql = sql,
@@ -27,6 +30,28 @@ function M.run(sql, config)
   end
 
   return vim.split(result.stdout, "\n", { plain = true })
+end
+
+function M.run_visual(config)
+  local sql = input.get_selection_text()
+
+  if vim.fn.mode():match("[vV\22]") then
+    vim.cmd("normal! \27")
+  end
+
+  if sql == "" then
+    vim.notify("No selection", vim.log.levels.WARN)
+    return
+  end
+
+  local ok, result = pcall(M.run_payload, sql, config)
+
+  if not ok then
+    vim.notify(result, vim.log.levels.ERROR)
+    return
+  end
+
+  output.show(result)
 end
 
 return M
