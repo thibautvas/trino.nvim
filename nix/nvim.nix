@@ -1,7 +1,5 @@
 {
-  lib,
   trino-nvim,
-  python3,
   neovim-unwrapped,
   wrapNeovimUnstable,
 }:
@@ -38,22 +36,7 @@ let
     }
   ];
 
-  extraPkgs = [
-    (python3.withPackages (ps: [
-      (ps.trino-python-client.overridePythonAttrs (oldAttrs: {
-        pname = "trino";
-      }))
-    ]))
-  ];
-
-  wrapperArgs = [
-    "--prefix"
-    "PATH"
-    ":"
-    (lib.makeBinPath extraPkgs)
-  ];
-
 in
 wrapNeovimUnstable neovim-unwrapped {
-  inherit luaRcContent plugins wrapperArgs;
+  inherit luaRcContent plugins;
 }
