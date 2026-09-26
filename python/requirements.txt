@@ -1,0 +1,26 @@
+certifi==2026.7.22
+    # via requests
+charset-normalizer==3.5.1
+    # via requests
+idna==3.20
+    # via requests
+lz4==4.4.5
+    # via trino
+orjson==3.12.0
+    # via trino
+python-dateutil==2.9.0.post0
+    # via trino
+pytz==2026.3.post1
+    # via trino
+requests==2.34.2
+    # via trino
+six==1.17.0
+    # via python-dateutil
+trino==0.340.0
+    # via trino.nvim
+tzlocal==5.4.4
+    # via trino
+urllib3==2.8.0
+    # via requests
+zstandard==0.25.0
+    # via trino
