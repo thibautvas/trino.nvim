@@ -1,4 +1,5 @@
 local main = require("trino.main")
+local venv = require("trino.venv")
 
 local M = {}
 
@@ -20,10 +21,15 @@ function M.run()
   main.run_visual(M.options)
 end
 
+M.venv = venv.build
+
 function M.setup(opts)
   M.options = vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
 
-  local subcmds = { run = M.run }
+  local subcmds = {
+    run = M.run,
+    venv = M.venv,
+  }
 
   vim.api.nvim_create_user_command("Trino", function(args)
     local sub = args.fargs[1]

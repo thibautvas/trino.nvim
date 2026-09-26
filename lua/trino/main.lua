@@ -14,9 +14,12 @@ function M.run_payload(sql, config)
     ":h:h:h"
   )
 
+  local venv_python = plugin_root .. "/python/venv/.bin/python"
+  local python = vim.fn.executable(venv_python) and venv_python or "python3"
+
   local result = vim.system(
     {
-      "python3",
+      python,
       plugin_root .. "/python/trino_query.py",
     },
     {
