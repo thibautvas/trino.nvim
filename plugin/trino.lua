@@ -1,2 +1,2 @@
-if vim.g.loaded_gitutils then return end
-vim.g.loaded_gitutils = true
+if vim.g.loaded_trino then return end
+vim.g.loaded_trino = true
