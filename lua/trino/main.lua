@@ -1,5 +1,6 @@
 local input = require("trino.input")
 local output = require("trino.output")
+local paths = require("trino.paths")
 
 local M = {}
 
@@ -9,18 +10,16 @@ function M.run_payload(sql, config)
     sql = sql,
   })
 
-  local plugin_root = vim.fn.fnamemodify(
-    debug.getinfo(1, "S").source:sub(2),
-    ":h:h:h"
-  )
-
-  local venv_python = plugin_root .. "/python/venv/.bin/python"
-  local python = vim.fn.executable(venv_python) and venv_python or "python3"
+  local python = paths.python()
+  if not python then
+    vim.notify("No python in PATH", vim.log.levels.ERROR)
+    return
+  end
 
   local result = vim.system(
     {
       python,
-      plugin_root .. "/python/trino_query.py",
+      paths.pydir() .. "/trino_query.py",
     },
     {
       stdin = payload,
