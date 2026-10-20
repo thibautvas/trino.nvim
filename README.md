@@ -33,7 +33,8 @@ require("trino").setup({
 ```
 And optionally:
 ```lua
-vim.keymap.set("x", "<leader>ef", require("trino").run, { desc = "Trino run visual" })
+vim.keymap.set("n", "<leader>ee", require("trino").run_input, { desc = "Trino run input" })
+vim.keymap.set("x", "<leader>ef", require("trino").run_visual, { desc = "Trino run visual" })
 ```
 
 The equivalent normal mode keymap requires a bit of work,
@@ -47,12 +48,12 @@ vim.keymap.set("n", "<leader>ef", function()
     "textobjects"
   )
   if ok then
-    require("trino").run()
+    require("trino").run_visual()
   end
 end, { desc = "Trino run normal" })
 ```
 
-Try it out by selecting the following and running `:'<,'>Trino run`,
+Try it out by selecting the following and running `:'<,'>Trino visual`,
 or an equivalent keymap:
 ```sql
 select *

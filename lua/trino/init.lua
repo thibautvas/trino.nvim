@@ -17,7 +17,11 @@ M.defaults = {
   verify = false,
 }
 
-function M.run()
+function M.run_input()
+  main.run_input(M.options)
+end
+
+function M.run_visual()
   main.run_visual(M.options)
 end
 
@@ -27,7 +31,8 @@ function M.setup(opts)
   M.options = vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
 
   local subcmds = {
-    run = M.run,
+    input = M.run_input,
+    visual = M.run_visual,
     venv = M.venv,
   }
 
