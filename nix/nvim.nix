@@ -31,7 +31,8 @@ let
           verify = false,
         })
 
-        vim.keymap.set("x", "<leader>ef", require("trino").run, { desc = "Trino run visual" })
+        vim.keymap.set("n", "<leader>ee", require("trino").run_input, { desc = "Trino run input" })
+        vim.keymap.set("x", "<leader>ef", require("trino").run_visual, { desc = "Trino run visual" })
       '';
     }
   ];

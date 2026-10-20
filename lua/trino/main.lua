@@ -4,7 +4,7 @@ local paths = require("trino.paths")
 
 local M = {}
 
-function M.run_payload(sql, config)
+local function run_payload(sql, config)
   local payload = vim.json.encode({
     config = config,
     sql = sql,
@@ -34,6 +34,17 @@ function M.run_payload(sql, config)
   return vim.split(result.stdout, "\n", { plain = true })
 end
 
+local function run_sql(sql, config)
+  local ok, result = pcall(run_payload, sql, config)
+
+  if not ok then
+    vim.notify(result, vim.log.levels.ERROR)
+    return
+  end
+
+  output.show(result)
+end
+
 function M.run_visual(config)
   local sql = input.get_selection_text()
 
@@ -46,14 +57,14 @@ function M.run_visual(config)
     return
   end
 
-  local ok, result = pcall(M.run_payload, sql, config)
+  run_sql(sql, config)
+end
 
-  if not ok then
-    vim.notify(result, vim.log.levels.ERROR)
-    return
-  end
-
-  output.show(result)
+function M.run_input(config)
+  vim.ui.input({ prompt = "Trino: " }, function(sql)
+    if not sql or sql == "" then return end
+    run_sql(sql, config)
+  end)
 end
 
 return M
