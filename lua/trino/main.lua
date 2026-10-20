@@ -1,48 +1,33 @@
+local client = require("trino.client")
+local csv = require("trino.csv")
 local input = require("trino.input")
 local output = require("trino.output")
-local paths = require("trino.paths")
 
 local M = {}
 
-local function run_payload(sql, config)
-  local payload = vim.json.encode({
-    config = config,
-    sql = sql,
-  })
-
-  local python = paths.python()
-  if not python then
-    vim.notify("No python in PATH", vim.log.levels.ERROR)
-    return
-  end
-
-  local result = vim.system(
-    {
-      python,
-      paths.pydir() .. "/trino_query.py",
-    },
-    {
-      stdin = payload,
-      text = true,
-    }
-  ):wait()
-
-  if result.code ~= 0 then
-    error(result.stderr)
-  end
-
-  return vim.split(result.stdout, "\n", { plain = true })
-end
+local current
 
 local function run_sql(sql, config)
-  local ok, result = pcall(run_payload, sql, config)
-
-  if not ok then
-    vim.notify(result, vim.log.levels.ERROR)
+  if current then
+    vim.notify("Trino query already running (:Trino cancel)", vim.log.levels.WARN)
     return
   end
 
-  output.show(result)
+  current = client.query(sql, config, function(err, columns, rows, update_type)
+    current = nil
+
+    if err then
+      vim.notify(err, vim.log.levels.ERROR)
+      return
+    end
+
+    if #columns == 0 then
+      vim.notify("Trino " .. (update_type or "query") .. " done")
+      return
+    end
+
+    output.show(csv.encode(columns, rows))
+  end)
 end
 
 function M.run_visual(config)
@@ -65,6 +50,17 @@ function M.run_input(config)
     if not sql or sql == "" then return end
     run_sql(sql, config)
   end)
+end
+
+function M.cancel()
+  if not current then
+    vim.notify("No Trino query running", vim.log.levels.WARN)
+    return
+  end
+
+  current.cancel()
+  current = nil
+  vim.notify("Trino query cancelled")
 end
 
 return M

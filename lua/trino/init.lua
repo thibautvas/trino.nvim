@@ -1,5 +1,4 @@
 local main = require("trino.main")
-local venv = require("trino.venv")
 
 local M = {}
 
@@ -7,7 +6,7 @@ M.defaults = {
   host = nil,
   port = 8080,
   catalog = nil,
-  http_headers = { ["X-Trino-User"] = nil },
+  http_headers = {},
   http_scheme = "https",
   auth = {
     type = "basic",
@@ -25,7 +24,7 @@ function M.run_visual()
   main.run_visual(M.options)
 end
 
-M.venv = venv.build
+M.cancel = main.cancel
 
 function M.setup(opts)
   M.options = vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
@@ -33,7 +32,7 @@ function M.setup(opts)
   local subcmds = {
     input = M.run_input,
     visual = M.run_visual,
-    venv = M.venv,
+    cancel = M.cancel,
   }
 
   vim.api.nvim_create_user_command("Trino", function(args)
