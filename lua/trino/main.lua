@@ -2,6 +2,7 @@ local client = require("trino.client")
 local csv = require("trino.csv")
 local input = require("trino.input")
 local output = require("trino.output")
+local progress = require("trino.progress")
 
 local M = {}
 
@@ -13,14 +14,19 @@ function M.run_sql(config, query)
     return
   end
 
+  progress.start()
+
   local conn = config.connection
-  current = client.run(conn, query, function(err, columns, rows, update_type)
+  current = client.run(conn, query, progress.update, function(err, columns, rows, update_type)
     current = nil
 
     if err then
+      progress.finish(false)
       vim.notify(err, vim.log.levels.ERROR)
       return
     end
+
+    progress.finish(true)
 
     if #columns == 0 then
       vim.notify("Trino " .. (update_type or "query") .. " done")
@@ -64,7 +70,10 @@ function M.cancel()
 
   current.cancel()
   current = nil
+  progress.finish(false, "cancelled")
   vim.notify("Trino query cancelled")
 end
+
+progress.on_cancel(M.cancel)
 
 return M

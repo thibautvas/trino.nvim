@@ -107,7 +107,7 @@ local function with_url(lines, url, extra)
   return lines
 end
 
-function M.run(conn, query, on_done)
+function M.run(conn, query, on_progress, on_done)
   local ok, base = pcall(base_options, conn)
   if not ok then
     on_done("config error: " .. base)
@@ -131,6 +131,10 @@ function M.run(conn, query, on_done)
     state.next_uri = resp.nextUri
     if not state.next_uri then
       return on_done(nil, state.columns or {}, state.rows, resp.updateType)
+    end
+
+    if on_progress and resp.stats then
+      on_progress(resp.stats)
     end
 
     request(state, with_url(base, state.next_uri), 0, step)
