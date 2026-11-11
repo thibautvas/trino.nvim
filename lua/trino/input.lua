@@ -1,6 +1,6 @@
 local M = {}
 
-function M.get_selection()
+function M.get_text()
   local mode = vim.fn.mode()
 
   local pos1, pos2, regtype
@@ -11,14 +11,10 @@ function M.get_selection()
   end
 
   if pos1[2] == 0 or pos2[2] == 0 or regtype == "" then
-    return {}
+    return ""
   end
 
-  return vim.fn.getregion(pos1, pos2, { type = regtype })
-end
-
-function M.get_selection_text()
-  return table.concat(M.get_selection(), "\n")
+  return table.concat(vim.fn.getregion(pos1, pos2, { type = regtype }), "\n")
 end
 
 return M

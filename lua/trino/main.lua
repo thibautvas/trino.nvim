@@ -26,12 +26,12 @@ local function run_sql(sql, config)
       return
     end
 
-    output.show(csv.encode(columns, rows))
+    output.show(csv.encode(columns, rows), { filetype = "csv" })
   end)
 end
 
 function M.run_visual(config)
-  local sql = input.get_selection_text()
+  local sql = input.get_text()
 
   if vim.fn.mode():match("[vV\22]") then
     vim.cmd("normal! \27")
