@@ -17,20 +17,7 @@ let
       plugin = trino-nvim;
       type = "lua";
       config = ''
-        require("trino").setup({
-          host = "localhost",
-          port = 8080,
-          catalog = "tpch",
-          http_headers = {},
-          http_scheme = "http",
-          auth = {
-            type = "none",
-            username = nil,
-            password = nil,
-          },
-          verify = false,
-        })
-
+        require("trino").setup()
         vim.keymap.set("n", "<leader>ee", require("trino").run_input, { desc = "Trino run input" })
         vim.keymap.set("x", "<leader>ef", require("trino").run_visual, { desc = "Trino run visual" })
       '';

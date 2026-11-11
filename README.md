@@ -5,23 +5,14 @@
 nix run github:thibautvas/trino.nvim#nvim
 ```
 
-## Example
-Start a docker container running trino in the background:
-```bash
-docker run -d --name trino -p 8080:8080 trinodb/trino
-```
-Or equivalently:
-```bash
-nix run github:thibautvas/trino.nvim#dockerTrino
-```
-
-Configure trino.nvim in `~/.config/nvim/init.lua`:
+## Configuration
+Overridable options:
 ```lua
 require("trino").setup({
   host = "localhost",
   port = 8080,
-  catalog = "tpch",
-  http_headers = { ["X-Trino-Original-User"] = "user" },
+  catalog = nil,
+  http_headers = {},
   http_scheme = "http",
   auth = {
     type = "none",
@@ -31,7 +22,8 @@ require("trino").setup({
   verify = false,
 })
 ```
-And optionally:
+
+Example keymaps:
 ```lua
 vim.keymap.set("n", "<leader>ee", require("trino").run_input, { desc = "Trino run input" })
 vim.keymap.set("x", "<leader>ef", require("trino").run_visual, { desc = "Trino run visual" })
@@ -51,6 +43,12 @@ vim.keymap.set("n", "<leader>ef", function()
     require("trino").run_visual()
   end
 end, { desc = "Trino run normal" })
+```
+
+## Example
+Start a docker container running trino in the background:
+```bash
+docker run -d --name trino -p 8080:8080 trinodb/trino
 ```
 
 Try it out by selecting the following and running `:'<,'>Trino visual`,

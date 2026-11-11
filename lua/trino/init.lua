@@ -3,13 +3,13 @@ local main = require("trino.main")
 local M = {}
 
 M.defaults = {
-  host = nil,
+  host = "localhost",
   port = 8080,
   catalog = nil,
-  http_headers = { ["X-Trino-User"] = nil },
-  http_scheme = "https",
+  http_headers = {},
+  http_scheme = "http",
   auth = {
-    type = "basic",
+    type = "none",
     username = nil,
     password = nil,
   },
