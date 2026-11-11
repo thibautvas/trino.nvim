@@ -21,7 +21,7 @@ let
           host = "localhost",
           port = 8080,
           catalog = "tpch",
-          http_headers = { ["X-Trino-Original-User"] = "placeholder" },
+          http_headers = {},
           http_scheme = "http",
           auth = {
             type = "none",

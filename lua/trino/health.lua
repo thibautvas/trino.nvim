@@ -1,5 +1,4 @@
 local trino = require("trino")
-local paths = require("trino.paths")
 
 local M = {}
 
@@ -8,7 +7,7 @@ local function check_nvim()
 
   if vim.fn.has("nvim-0.10") ~= 1 then
     vim.health.error("Neovim 0.10 or newer is required", {
-      "vim.system is used to run the python client",
+      "vim.system is used to run the curl commands",
     })
     return
   end
@@ -16,51 +15,34 @@ local function check_nvim()
   vim.health.ok(string.format("nvim version: %s", vim.version()))
 end
 
-local function check_python()
-  vim.health.start("trino.nvim: python")
+local function check_curl()
+  vim.health.start("trino.nvim: curl")
 
-  local python = paths.python()
-  if not python then
-    vim.health.error("No python3 in PATH or repo venv")
+  if vim.fn.executable("curl") ~= 1 then
+    vim.health.error("curl not found in PATH", {
+      "curl is used to send the http requests",
+    })
     return
   end
 
-  vim.health.ok(string.format("interpreter: %s", python))
-
-  return python
-end
-
-local function check_client(python)
-  vim.health.start("trino.nvim: trino client")
-
-  local trino_version = vim.fn.system({ python, "-c", "import trino; print(trino.__version__, end='')" })
-
-  if vim.v.shell_error ~= 0 then
-    vim.health.error("No trino in python lib")
-    return
-  end
-
-  vim.health.ok(string.format("trino %s available", trino_version))
+  local curlv = vim.fn.system({ "curl", "--version" }):match("(%d+%.%d+%.%d+)")
+  vim.health.ok(string.format("curl version: %s", curlv))
 end
 
 local function check_config()
   vim.health.start("trino.nvim: config")
 
   local config = trino.options
-  vim.health.info(string.format(
-    "%s://%s:%s, catalog %s, auth %s",
-    config.http_scheme,
-    config.host,
-    config.port,
-    config.catalog,
-    (config.auth or {}).type or "none"
-  ))
+
+  vim.health.info(string.format("url: %s://%s:%s", config.http_scheme, config.host, config.port))
+  vim.health.info(string.format("catalog: %s", config.catalog or "none"))
+  vim.health.info(string.format("auth: %s", (config.auth or {}).type or "none"))
+  vim.health.info(string.format("verify: %s", config.verify))
 end
 
 function M.check()
   check_nvim()
-  local python = check_python()
-  check_client(python)
+  check_curl()
   check_config()
 end
 
