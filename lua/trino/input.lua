@@ -1,3 +1,5 @@
+local tl = require("trino.legacy")
+
 local M = {}
 
 function M.get_text()
@@ -14,7 +16,7 @@ function M.get_text()
     return ""
   end
 
-  return table.concat(vim.fn.getregion(pos1, pos2, { type = regtype }), "\n")
+  return table.concat(tl.getregion(pos1, pos2, regtype), "\n")
 end
 
 return M

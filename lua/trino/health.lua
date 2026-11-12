@@ -5,9 +5,9 @@ local M = {}
 local function check_nvim()
   vim.health.start("trino.nvim: nvim")
 
-  if vim.fn.has("nvim-0.10") ~= 1 then
-    vim.health.error("Neovim 0.10 or newer is required", {
-      "vim.system is used to run the curl commands",
+  if vim.fn.has("nvim-0.9") ~= 1 then
+    vim.health.error("Neovim 0.9 or newer is required", {
+      "vim.fn.jobstart is used to run the curl commands",
     })
     return
   end

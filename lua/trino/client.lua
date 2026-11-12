@@ -1,3 +1,5 @@
+local tl = require("trino.legacy")
+
 local M = {}
 
 local MAX_RETRIES = 5
@@ -61,7 +63,7 @@ local function base_options(config)
 end
 
 local function request(state, lines, attempt, cb)
-  state.proc = vim.system(
+  state.proc = tl.system(
     { "curl", "-K", "-" },
     { stdin = table.concat(lines, "\n") .. "\n", text = true },
     vim.schedule_wrap(function(res)
@@ -149,7 +151,7 @@ function M.query(sql, config, on_done)
         state.proc:kill("sigterm")
       end
       if state.next_uri then
-        vim.system({ "curl", "-K", "-" }, {
+        tl.system({ "curl", "-K", "-" }, {
           stdin = table.concat(with_url(base, state.next_uri, { "request = DELETE" }), "\n") .. "\n",
         })
       end
