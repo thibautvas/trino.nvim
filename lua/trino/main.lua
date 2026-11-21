@@ -7,13 +7,13 @@ local M = {}
 
 local current
 
-local function run_sql(sql, config)
+function M.run_sql(config, query)
   if current then
     vim.notify("Trino query already running", vim.log.levels.WARN)
     return
   end
 
-  current = client.query(sql, config, function(err, columns, rows, update_type)
+  current = client.run(config, query, function(err, columns, rows, update_type)
     current = nil
 
     if err then
@@ -31,24 +31,24 @@ local function run_sql(sql, config)
 end
 
 function M.run_visual(config)
-  local sql = input.get_text()
+  local query = input.get_text()
 
   if vim.fn.mode():match("[vV\22]") then
     vim.cmd("normal! \27")
   end
 
-  if sql == "" then
+  if query == "" then
     vim.notify("No selection", vim.log.levels.WARN)
     return
   end
 
-  run_sql(sql, config)
+  M.run_sql(config, query)
 end
 
 function M.run_input(config)
-  vim.ui.input({ prompt = "Trino: " }, function(sql)
-    if not sql or sql == "" then return end
-    run_sql(sql, config)
+  vim.ui.input({ prompt = "Trino: " }, function(query)
+    if not query or query == "" then return end
+    M.run_sql(config, query)
   end)
 end
 
