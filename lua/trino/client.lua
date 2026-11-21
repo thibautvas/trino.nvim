@@ -19,14 +19,14 @@ local function quote(s)
   return '"' .. s .. '"'
 end
 
-local function base_options(config)
+local function base_options(conn)
   local lines = {
     "silent",
     "show-error",
     'write-out = "\\n%{http_code}"',
   }
 
-  local auth = config.auth or {}
+  local auth = conn.auth or {}
   local auth_type = auth.type or "none"
   if auth_type == "basic" then
     if not auth.username or not auth.password then
@@ -42,7 +42,7 @@ local function base_options(config)
     error("unsupported auth.type: " .. tostring(auth_type), 0)
   end
 
-  local verify = config.verify
+  local verify = conn.verify
   if verify == false then
     table.insert(lines, "insecure")
   elseif type(verify) == "string" then
@@ -53,7 +53,7 @@ local function base_options(config)
     table.insert(lines, "cacert = " .. quote(path))
   end
 
-  local headers = vim.deepcopy(config.http_headers or {})
+  local headers = vim.deepcopy(conn.http_headers or {})
   headers["X-Trino-User"] = headers["X-Trino-User"] or auth.username or vim.env.USER or "trino.nvim"
   for name, value in pairs(headers) do
     table.insert(lines, "header = " .. quote(name .. ": " .. tostring(value)))
@@ -107,8 +107,8 @@ local function with_url(lines, url, extra)
   return lines
 end
 
-function M.run(config, query, on_done)
-  local ok, base = pcall(base_options, config)
+function M.run(conn, query, on_done)
+  local ok, base = pcall(base_options, conn)
   if not ok then
     on_done("config error: " .. base)
     return
@@ -136,10 +136,10 @@ function M.run(config, query, on_done)
     request(state, with_url(base, state.next_uri), 0, step)
   end
 
-  local url = string.format("%s://%s:%s/v1/statement", config.http_scheme, config.host, config.port)
+  local url = string.format("%s://%s:%s/v1/statement", conn.http_scheme, conn.host, conn.port)
   local extra = {}
-  if config.catalog then
-    table.insert(extra, "header = " .. quote("X-Trino-Catalog: " .. config.catalog))
+  if conn.catalog then
+    table.insert(extra, "header = " .. quote("X-Trino-Catalog: " .. conn.catalog))
   end
   table.insert(extra, "data-binary = " .. quote(query))
   request(state, with_url(base, url, extra), 0, step)

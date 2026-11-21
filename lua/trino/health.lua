@@ -32,12 +32,12 @@ end
 local function check_config()
   vim.health.start("trino.nvim: config")
 
-  local config = trino.options
+  local conn = trino.options.connection
 
-  vim.health.info(string.format("url: %s://%s:%s", config.http_scheme, config.host, config.port))
-  vim.health.info(string.format("catalog: %s", config.catalog or "none"))
-  vim.health.info(string.format("auth: %s", (config.auth or {}).type or "none"))
-  vim.health.info(string.format("verify: %s", config.verify))
+  vim.health.info(string.format("url: %s://%s:%s", conn.http_scheme, conn.host, conn.port))
+  vim.health.info(string.format("catalog: %s", conn.catalog or "none"))
+  vim.health.info(string.format("auth: %s", (conn.auth or {}).type or "none"))
+  vim.health.info(string.format("verify: %s", conn.verify))
 end
 
 function M.check()

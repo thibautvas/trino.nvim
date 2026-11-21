@@ -3,17 +3,22 @@ local main = require("trino.main")
 local M = {}
 
 M.defaults = {
-  host = "localhost",
-  port = 8080,
-  catalog = nil,
-  http_headers = {},
-  http_scheme = "http",
-  auth = {
-    type = "none",
-    username = nil,
-    password = nil,
+  connection = {
+    host = "localhost",
+    port = 8080,
+    catalog = nil,
+    http_headers = {},
+    http_scheme = "http",
+    auth = {
+      type = "none",
+      username = nil,
+      password = nil,
+    },
+    verify = false,
   },
-  verify = false,
+  output = {
+    open_cmd = nil,
+  },
 }
 
 function M.run_sql(query)
