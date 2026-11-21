@@ -107,7 +107,7 @@ local function with_url(lines, url, extra)
   return lines
 end
 
-function M.query(sql, config, on_done)
+function M.run(config, query, on_done)
   local ok, base = pcall(base_options, config)
   if not ok then
     on_done("config error: " .. base)
@@ -141,7 +141,7 @@ function M.query(sql, config, on_done)
   if config.catalog then
     table.insert(extra, "header = " .. quote("X-Trino-Catalog: " .. config.catalog))
   end
-  table.insert(extra, "data-binary = " .. quote(sql))
+  table.insert(extra, "data-binary = " .. quote(query))
   request(state, with_url(base, url, extra), 0, step)
 
   return {

@@ -16,6 +16,10 @@ M.defaults = {
   verify = false,
 }
 
+function M.run_sql(query)
+  main.run_sql(M.options, query)
+end
+
 function M.run_input()
   main.run_input(M.options)
 end
