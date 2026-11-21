@@ -13,7 +13,8 @@ function M.run_sql(config, query)
     return
   end
 
-  current = client.run(config, query, function(err, columns, rows, update_type)
+  local conn = config.connection
+  current = client.run(conn, query, function(err, columns, rows, update_type)
     current = nil
 
     if err then
@@ -26,7 +27,10 @@ function M.run_sql(config, query)
       return
     end
 
-    output.show(csv.encode(columns, rows), { filetype = "csv" })
+    output.show(csv.encode(columns, rows), {
+      filetype = "csv",
+      open_cmd = config.output.open_cmd,
+    })
   end)
 end
 

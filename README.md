@@ -9,17 +9,22 @@ nix run github:thibautvas/trino.nvim#nvim
 Overridable options:
 ```lua
 require("trino").setup({
-  host = "localhost",
-  port = 8080,
-  catalog = nil,
-  http_headers = {},
-  http_scheme = "http",
-  auth = {
-    type = "none",
-    username = nil,
-    password = nil,
+  connection = {
+    host = "localhost",
+    port = 8080,
+    catalog = nil,
+    http_headers = {},
+    http_scheme = "http",
+    auth = {
+      type = "none",
+      username = nil,
+      password = nil,
+    },
+    verify = false,
   },
-  verify = false,
+  output = {
+    open_cmd = nil,
+  },
 })
 ```
 

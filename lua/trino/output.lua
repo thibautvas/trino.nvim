@@ -10,6 +10,9 @@ function M.show(lines, opts)
   vim.bo[buf].swapfile = false
   vim.bo[buf].filetype = opts.filetype
 
+  if opts.open_cmd then
+    vim.cmd(opts.open_cmd)
+  end
   vim.api.nvim_win_set_buf(0, buf)
 end
 
